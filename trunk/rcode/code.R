@@ -26,9 +26,15 @@ GDAL.close(image1)
 
 ##
 ##
-#image1.raster.flat[image1.raster.flat <40] <- 1
-#image1.raster.flat[image1.raster.flat >210] <- 3
-x <- pixmapRGB(image1.raster.flat)
-plot(t(t(x)))
-
-?rnorm
+## MOVE 1
+plot(pixmapGrey(image1.raster.flat))
+raster.beta <- 2.5
+raster.bigK <- 200
+raster.temperature <- 6.0
+raster.image <- image1.raster.flat
+raster.labels<- as.mtrix()
+raster.labels_num <- 2
+raster.weights <- as.vector(rep(0,raster.l))
+raster.mus <- as.matrix(cbind( rep(0.2, raster.l) , rep(0.7, raster.l)))
+matr.sigmas <- c(0.05, 0.00001, 0.05, 0.00001)
+raster.sigma <-cbind( c(matr.sigma, matr.sigma))
