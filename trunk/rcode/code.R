@@ -1,24 +1,43 @@
 ##
 ## loading specific library to process images
+##
 library(rgdal)
 library(pixmap)
+##
+## include my functions code
+##
+source("moves.R")
+##
+## Initialize display to plot our stuff
+##
 par(mfrow=c(2,2))
-
 ##
 ## open sample image and get raster data
+##
 image1 <- GDAL.open("star1.png") 
 image1.description <- getDescription(image1)
 image1.driver <- getDriverLongName(getDriver(image1))
 image1.dim <- dim(image1)
 image1.metadata <- getMetadata(image1)
-image1.raster <- getRasterData(image1, band = 1, offset = c(0, 0),
-dim(image1), dim(image1), interleave = c(0, 0), as.is = FALSE)
-image1.raster.flat <- t(getRasterData(image1, band=1))
-
+image1.raster <- getRasterData(image1, band = 1, offset = c(0, 0),dim(image1), dim(image1), interleave = c(0, 0), as.is = FALSE)
+image1.raster <- image1.raster / 255
+image1.raster.flat <- t(getRasterData(image1, band=1)) / 255
+displayDataset(image1, band=1, reset = FALSE)
+GDAL.close(image1)
 ##
 ## plot image and raster density
-displayDataset(image1, band=1, reset = FALSE)
+##
 plot(density(image1.raster))
+##
+## Initialize simple Gaussian mixture
+##
+means <- as.vector(c(0.15, 0.9))
+st_dev <-as.vector(c(0.6,0.15))
+labels <- segmentImage(means, st_dev, image1.raster)
+labels[labels[]==1]<-0.6
+labels[labels[]==2]<-0.5
+plot(pixmapGrey(labels))
+
 
 ##
 ## close image
@@ -27,7 +46,11 @@ GDAL.close(image1)
 ##
 ##
 ## MOVE 1
-plot(pixmapGrey(image1.raster.flat))
+segmentImage <- function(mu, sigma, raster){
+
+}
+
+plot(pixmapGrey(labels))
 raster.beta <- 2.5
 raster.bigK <- 200
 raster.temperature <- 6.0
