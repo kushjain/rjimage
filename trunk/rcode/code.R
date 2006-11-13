@@ -6,7 +6,7 @@ library(pixmap)
 ##
 ## include my functions code
 ##
-source("moves.R")
+source("rcode/moves.R")
 ##
 ## Initialize display to plot our stuff
 ##
@@ -14,7 +14,7 @@ par(mfrow=c(2,2))
 ##
 ## open sample image and get raster data
 ##
-image1 <- GDAL.open("star1.png") 
+image1 <- GDAL.open("rcode/star1.png") 
 image1.description <- getDescription(image1)
 image1.driver <- getDriverLongName(getDriver(image1))
 image1.dim <- dim(image1)
