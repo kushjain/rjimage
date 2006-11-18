@@ -14,7 +14,8 @@ par(mfrow=c(2,2))
 ##
 ## open sample image and get raster data
 ##
-image1 <- GDAL.open("rcode/star1.png") 
+image1 <- GDAL.open("star1.png") 
+image1 <- GDAL.open("rcode/test1.PNG") 
 image1.description <- getDescription(image1)
 image1.driver <- getDriverLongName(getDriver(image1))
 image1.dim <- dim(image1)
@@ -33,8 +34,11 @@ plot(density(image1.raster))
 ##
 classes<-cbind(c(0.15, 0.9),c(0.6,0.15))
 labels <- segmentImage(classes, image1.raster)
-energy <- energy()
-energy <- function(raster, labels, classes, beta)
+##
+## Test the energy
+##
+beta<-0.28
+energy <- energy(raster, labels, classes, beta)
 
 ##
 ## close image
@@ -58,3 +62,7 @@ raster.weights <- as.vector(rep(0,raster.l))
 raster.mus <- as.matrix(cbind( rep(0.2, raster.l) , rep(0.7, raster.l)))
 matr.sigmas <- c(0.05, 0.00001, 0.05, 0.00001)
 raster.sigma <-cbind( c(matr.sigma, matr.sigma))
+##
+## Testing section
+##
+doubleton(101,101,raster,labels,2.8)

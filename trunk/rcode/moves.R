@@ -14,8 +14,8 @@ segmentImage <- function(classes, raster){
  segmentation <- matrix(rep(0,pixel_num),nrow=size_x, ncol=size_y, byrow=TRUE)
  segmentation_t <- segmentation
  for(i in 1:labels_dim){
-  c_mu <- classes[i][1]
-  c_s <- classes[i][2]
+  c_mu <- classes[i,1]
+  c_s <- classes[i,2]
   segmentation_draft <- dnorm(raster, c_mu, c_s)
   segmentation[segmentation_t[,] < segmentation_draft[,]] <- i
   for(k in 1:size_x){
@@ -36,40 +36,41 @@ singleton <- function(raster_value, mean, variance)
 }
 
 
-doubleton <- function(i, j, label, raster, labels, beta)
+doubleton <- function(i, j, raster, labels, beta)
 {
   energy <- 0.0;
   height <- dim(raster)[1]
-  widtht <- dim(raster)[2]
+  width <- dim(raster)[2]
+  label <- labels[i,j]
 
-  if (i!=height-1) # south
+  if (i!=height) # south
     {
-      if (label == labels[i+1][j]) energy <- energy - beta
+      if (label == labels[i+1,j]) energy <- energy - beta
       else energy <- energy + beta
     }
-  if (j!=width-1) # east
+  if (j!=width) # east
     {
-      if (label == labels[i][j+1]) energy <- energy - beta
+      if (label == labels[i,j+1]) energy <- energy - beta
       else energy <- energy + beta
     }
-  if (i!=0) # nord
+  if (i!=1) # nord
     {
-      if (label == labels[i-1][j]) energy <- energy - beta
+      if (label == labels[i-1,j]) energy <- energy - beta
       else energy <- energy + beta
     }
-  if (j!=0) # west
+  if (j!=1) # west
     {
-      if (label == labels[i][j-1]) energy <- energy - beta
+      if (label == labels[i,j-1]) energy <- energy - beta
       else energy <- energy + beta
     }
-  energy;
+  energy
 }
 
 local_energy <- function(i, j, raster, labels, classes, label)
 {
   ## singleton singleton <- function(raster_value, mean, variance)
   ## doubleton doubleton <- function(i, j, label, raster, labels, beta)
-  singleton(raster[i][j], classes[label][1], classes[label][2]) + doubleton(i,j,label,raster,labels,beta)
+  singleton(raster[i,j], classes[label,1], classes[label,2]) + doubleton(i,j,raster,labels,beta)
 }
 
 energy <- function(raster, labels, classes, beta)
@@ -77,15 +78,15 @@ energy <- function(raster, labels, classes, beta)
   singletons <- 0.0;
   doubletons <- 0.0;
   height <- dim(raster)[1]
-  widtht <- dim(raster)[2]
+  width <- dim(raster)[2]
   
   for (i in 1:height){
     for (j in 1:width){
-	  k <- labels[i][j]
+        k<-labels[i,j]
 	  ## singleton singleton <- function(raster_value, mean, variance)
-	  singletons <- singletons + singleton(raster[i][j], classes[k][1], classes[k][2])
+	  singletons <- singletons + singleton(raster[i,j], classes[k,1], classes[k,2])
 	  ## doubleton doubleton <- function(i, j, label, raster, labels, beta)
-	  doubletons <- doubletons + doubleton(i,j,k,raster,labels, beta)
+	  doubletons <- doubletons + doubleton(i,j,raster,labels,beta)
       }
   }    
   singletons + doubletons / 2
