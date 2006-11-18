@@ -6,7 +6,7 @@ library(pixmap)
 ##
 ## include my functions code
 ##
-source("rcode/moves.R")
+source("moves.R")
 ##
 ## Initialize display to plot our stuff
 ##
@@ -31,13 +31,10 @@ plot(density(image1.raster))
 ##
 ## Initialize simple Gaussian mixture
 ##
-means <- as.vector(c(0.15, 0.9))
-st_dev <-as.vector(c(0.6,0.15))
-labels <- segmentImage(means, st_dev, image1.raster)
-labels[labels[]==1]<-0.6
-labels[labels[]==2]<-0.5
-plot(pixmapGrey(labels))
-
+classes<-cbind(c(0.15, 0.9),c(0.6,0.15))
+labels <- segmentImage(classes, image1.raster)
+energy <- energy()
+energy <- function(raster, labels, classes, beta)
 
 ##
 ## close image
